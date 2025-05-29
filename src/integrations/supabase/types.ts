@@ -9,7 +9,164 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      bsr_history: {
+        Row: {
+          bsr: number
+          id: string
+          product_id: string | null
+          recorded_at: string | null
+        }
+        Insert: {
+          bsr: number
+          id?: string
+          product_id?: string | null
+          recorded_at?: string | null
+        }
+        Update: {
+          bsr?: number
+          id?: string
+          product_id?: string | null
+          recorded_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bsr_history_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      products: {
+        Row: {
+          amazon_price: number | null
+          asin: string | null
+          bsr: number | null
+          category: string | null
+          cost_price: number | null
+          created_at: string | null
+          description: string | null
+          ebay_price: number | null
+          id: string
+          image_url: string | null
+          last_updated: string | null
+          margin: number | null
+          marketplace: string
+          marketplace_url: string | null
+          profit: number | null
+          subcategory: string | null
+          title: string
+        }
+        Insert: {
+          amazon_price?: number | null
+          asin?: string | null
+          bsr?: number | null
+          category?: string | null
+          cost_price?: number | null
+          created_at?: string | null
+          description?: string | null
+          ebay_price?: number | null
+          id?: string
+          image_url?: string | null
+          last_updated?: string | null
+          margin?: number | null
+          marketplace: string
+          marketplace_url?: string | null
+          profit?: number | null
+          subcategory?: string | null
+          title: string
+        }
+        Update: {
+          amazon_price?: number | null
+          asin?: string | null
+          bsr?: number | null
+          category?: string | null
+          cost_price?: number | null
+          created_at?: string | null
+          description?: string | null
+          ebay_price?: number | null
+          id?: string
+          image_url?: string | null
+          last_updated?: string | null
+          margin?: number | null
+          marketplace?: string
+          marketplace_url?: string | null
+          profit?: number | null
+          subcategory?: string | null
+          title?: string
+        }
+        Relationships: []
+      }
+      saved_searches: {
+        Row: {
+          created_at: string | null
+          filters: Json
+          id: string
+          is_active: boolean | null
+          name: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          filters: Json
+          id?: string
+          is_active?: boolean | null
+          name: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          filters?: Json
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      search_alerts: {
+        Row: {
+          id: string
+          product_id: string | null
+          saved_search_id: string | null
+          sent_at: string | null
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          product_id?: string | null
+          saved_search_id?: string | null
+          sent_at?: string | null
+          user_id: string
+        }
+        Update: {
+          id?: string
+          product_id?: string | null
+          saved_search_id?: string | null
+          sent_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "search_alerts_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "search_alerts_saved_search_id_fkey"
+            columns: ["saved_search_id"]
+            isOneToOne: false
+            referencedRelation: "saved_searches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never

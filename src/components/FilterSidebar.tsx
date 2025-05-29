@@ -2,16 +2,11 @@
 import { Card } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { ProductFilters } from "@/services/productService";
 
 interface FilterSidebarProps {
-  filters: {
-    category: string;
-    maxBSR: number;
-    minProfit: number;
-    minMargin: number;
-    priceRange: number[];
-  };
-  setFilters: (filters: any) => void;
+  filters: ProductFilters;
+  setFilters: (filters: ProductFilters) => void;
 }
 
 const FilterSidebar = ({ filters, setFilters }: FilterSidebarProps) => {
@@ -34,7 +29,7 @@ const FilterSidebar = ({ filters, setFilters }: FilterSidebarProps) => {
       <Card className="p-4 mb-6">
         <h3 className="font-semibold mb-3">Category</h3>
         <Select 
-          value={filters.category} 
+          value={filters.category || ""} 
           onValueChange={(value) => setFilters({...filters, category: value})}
         >
           <SelectTrigger>
@@ -56,10 +51,10 @@ const FilterSidebar = ({ filters, setFilters }: FilterSidebarProps) => {
         <div className="space-y-3">
           <div className="flex justify-between text-sm text-gray-600">
             <span>Max BSR</span>
-            <span>{filters.maxBSR.toLocaleString()}</span>
+            <span>{(filters.maxBSR || 0).toLocaleString()}</span>
           </div>
           <Slider
-            value={[filters.maxBSR]}
+            value={[filters.maxBSR || 300000]}
             onValueChange={([value]) => setFilters({...filters, maxBSR: value})}
             max={500000}
             min={1000}
@@ -75,10 +70,10 @@ const FilterSidebar = ({ filters, setFilters }: FilterSidebarProps) => {
         <div className="space-y-3">
           <div className="flex justify-between text-sm text-gray-600">
             <span>Min Profit</span>
-            <span>${filters.minProfit}</span>
+            <span>${filters.minProfit || 0}</span>
           </div>
           <Slider
-            value={[filters.minProfit]}
+            value={[filters.minProfit || 7]}
             onValueChange={([value]) => setFilters({...filters, minProfit: value})}
             max={50}
             min={1}
@@ -94,10 +89,10 @@ const FilterSidebar = ({ filters, setFilters }: FilterSidebarProps) => {
         <div className="space-y-3">
           <div className="flex justify-between text-sm text-gray-600">
             <span>Min Margin</span>
-            <span>{filters.minMargin}%</span>
+            <span>{filters.minMargin || 0}%</span>
           </div>
           <Slider
-            value={[filters.minMargin]}
+            value={[filters.minMargin || 20]}
             onValueChange={([value]) => setFilters({...filters, minMargin: value})}
             max={100}
             min={5}
@@ -112,12 +107,12 @@ const FilterSidebar = ({ filters, setFilters }: FilterSidebarProps) => {
         <h3 className="font-semibold mb-3">Price Range</h3>
         <div className="space-y-3">
           <div className="flex justify-between text-sm text-gray-600">
-            <span>${filters.priceRange[0]}</span>
-            <span>${filters.priceRange[1]}</span>
+            <span>${filters.priceRange?.[0] || 0}</span>
+            <span>${filters.priceRange?.[1] || 1000}</span>
           </div>
           <Slider
-            value={filters.priceRange}
-            onValueChange={(value) => setFilters({...filters, priceRange: value})}
+            value={filters.priceRange || [0, 1000]}
+            onValueChange={(value) => setFilters({...filters, priceRange: [value[0], value[1]]})}
             max={1000}
             min={0}
             step={10}

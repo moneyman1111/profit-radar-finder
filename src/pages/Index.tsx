@@ -5,11 +5,12 @@ import FilterSidebar from "@/components/FilterSidebar";
 import ProductGrid from "@/components/ProductGrid";
 import ProfitCalculator from "@/components/ProfitCalculator";
 import { Card } from "@/components/ui/card";
+import { Product, ProductFilters } from "@/services/productService";
 
 const Index = () => {
-  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [showCalculator, setShowCalculator] = useState(false);
-  const [filters, setFilters] = useState({
+  const [filters, setFilters] = useState<ProductFilters>({
     category: "",
     maxBSR: 300000,
     minProfit: 7,
@@ -28,20 +29,20 @@ const Index = () => {
           {/* Stats Overview */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
             <Card className="p-6 bg-gradient-to-r from-green-500 to-green-600 text-white">
-              <div className="text-2xl font-bold">1,247</div>
-              <div className="text-green-100">Products Found</div>
+              <div className="text-2xl font-bold">Search Active</div>
+              <div className="text-green-100">Real-time Results</div>
             </Card>
             <Card className="p-6 bg-gradient-to-r from-blue-500 to-blue-600 text-white">
               <div className="text-2xl font-bold">$12.50</div>
-              <div className="text-blue-100">Avg Profit</div>
+              <div className="text-blue-100">Target Profit</div>
             </Card>
             <Card className="p-6 bg-gradient-to-r from-purple-500 to-purple-600 text-white">
               <div className="text-2xl font-bold">28%</div>
-              <div className="text-purple-100">Avg Margin</div>
+              <div className="text-purple-100">Target Margin</div>
             </Card>
             <Card className="p-6 bg-gradient-to-r from-orange-500 to-orange-600 text-white">
-              <div className="text-2xl font-bold">142K</div>
-              <div className="text-orange-100">Avg BSR</div>
+              <div className="text-2xl font-bold">300K</div>
+              <div className="text-orange-100">Max BSR</div>
             </Card>
           </div>
 

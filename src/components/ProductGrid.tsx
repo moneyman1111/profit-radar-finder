@@ -3,79 +3,49 @@ import { useState } from "react";
 import ProductCard from "@/components/ProductCard";
 import BSRTrendChart from "@/components/BSRTrendChart";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { useProducts } from "@/hooks/useProducts";
+import { Product, ProductFilters } from "@/services/productService";
+import { Loader2 } from "lucide-react";
 
 interface ProductGridProps {
-  filters: any;
-  onProductSelect: (product: any) => void;
+  filters: ProductFilters;
+  onProductSelect: (product: Product | null) => void;
 }
 
-// Mock product data
-const mockProducts = [
-  {
-    id: "1",
-    title: "Wireless Bluetooth Headphones - Premium Sound Quality",
-    image: "/placeholder.svg",
-    price: 89.99,
-    amazonPrice: 129.99,
-    bsr: 45000,
-    profit: 15.20,
-    margin: 32,
-    category: "Electronics",
-    asin: "B08XYZ123"
-  },
-  {
-    id: "2", 
-    title: "Kitchen Knife Set - Professional Grade Stainless Steel",
-    image: "/placeholder.svg",
-    price: 45.99,
-    amazonPrice: 67.99,
-    bsr: 120000,
-    profit: 8.50,
-    margin: 24,
-    category: "Home & Kitchen",
-    asin: "B09ABC456"
-  },
-  {
-    id: "3",
-    title: "Educational STEM Building Blocks Set for Kids",
-    image: "/placeholder.svg",
-    price: 32.99,
-    amazonPrice: 49.99,
-    bsr: 89000,
-    profit: 12.30,
-    margin: 28,
-    category: "Toys & Games",
-    asin: "B07DEF789"
-  },
-  {
-    id: "4",
-    title: "Yoga Mat - Extra Thick Non-Slip Exercise Mat",
-    image: "/placeholder.svg",
-    price: 24.99,
-    amazonPrice: 39.99,
-    bsr: 67000,
-    profit: 9.75,
-    margin: 31,
-    category: "Sports & Outdoors",
-    asin: "B06GHI012"
-  }
-];
-
 const ProductGrid = ({ filters, onProductSelect }: ProductGridProps) => {
-  const [selectedProduct, setSelectedProduct] = useState<any>(null);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [showBSRChart, setShowBSRChart] = useState(false);
+  
+  const { data: products = [], isLoading, error } = useProducts(filters);
 
-  const handleViewBSR = (product: any) => {
+  const handleViewBSR = (product: Product) => {
     setSelectedProduct(product);
     setShowBSRChart(true);
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <Loader2 className="w-8 h-8 animate-spin" />
+        <span className="ml-2">Loading products...</span>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="text-center py-12">
+        <p className="text-red-600">Error loading products. Please try again.</p>
+      </div>
+    );
+  }
 
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
         <div>
           <h2 className="text-xl font-bold">Product Opportunities</h2>
-          <p className="text-gray-600">{mockProducts.length} products found matching your criteria</p>
+          <p className="text-gray-600">{products.length} products found matching your criteria</p>
         </div>
         <div className="flex gap-2">
           <select className="border border-gray-300 rounded-lg px-3 py-2">
@@ -86,16 +56,23 @@ const ProductGrid = ({ filters, onProductSelect }: ProductGridProps) => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-        {mockProducts.map((product) => (
-          <ProductCard
-            key={product.id}
-            product={product}
-            onSelect={onProductSelect}
-            onViewBSR={() => handleViewBSR(product)}
-          />
-        ))}
-      </div>
+      {products.length === 0 ? (
+        <div className="text-center py-12">
+          <p className="text-gray-500">No products found matching your criteria.</p>
+          <p className="text-sm text-gray-400 mt-2">Try adjusting your filters or check back later for new products.</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+          {products.map((product) => (
+            <ProductCard
+              key={product.id}
+              product={product}
+              onSelect={onProductSelect}
+              onViewBSR={() => handleViewBSR(product)}
+            />
+          ))}
+        </div>
+      )}
 
       {/* BSR Trend Modal */}
       <Dialog open={showBSRChart} onOpenChange={setShowBSRChart}>
